@@ -1,0 +1,74 @@
+10.安装anaconda
+ 下载，安装，配置环境变量
+ conda -V 查看版本
+
+20.新建虚拟环境
+ conda create -n yolov5 python=3.9 -y 
+
+
+30.下载代码
+ https://github.com/ultralytics/yolov5
+
+40.pycharm配置
+ File -> Settings -> Project:yolov5 -> Python Interpreter -> add -> Conda Enviroment -> Existing Enviroment -> 选择你的虚拟环境路径 -> ok
+
+50.激活虚拟环境
+ activate yolov5 
+ 
+60.安装第三方库
+ pip install -r requirements.txt
+
+70.可视化标注数据
+ pip install labelimg
+
+80.自己的目录结构
+dataset #(数据集名字：例如fire) 
+├── images      
+       ├── train          
+              ├── xx.jpg     
+       ├── val         
+              ├── xx.jpg 
+├── labels      
+       ├── train          
+              ├── xx.txt     
+       ├── val         
+              ├── xx.txt
+注意：一张图片(xxx.jpg)对应一个标签(xxx.txt)。
+如00000.jpg对应标签00000.txt。
+txt中存放标签数据，每一行数字分别表示：目标类别，x，y，w，h
+<object-class> <x> <y> <width> <height> 
+例如：
+0 0.55882 0.77297 0.33824 0.24865 
+其中
+- <object-class>：对象的标签索引(标签索引从0开始)
+- x,y是目标的中心坐标，width,height是目标的宽和高。这些坐标是通过归一化的，其中x，width是使用原图的width进行归一化；而y，height是使用原图的height进行归一化。
+ 
+90.创建配置文件
+在yolov5/data文件夹下新建fire.yaml。
+内容如下所示：
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+path: E:\for_test_proj\yolov5_ncnn\datasets\fire  # dataset root dir
+train: images/train  # train images (relative to 'path')
+val: images/val  # val images (relative to 'path')
+test:  # test images (optional)
+
+# Classes
+nc: 1  # number of classes
+names: ['fire']  # class names
+
+其中：
+path：数据集的根目录
+train：训练集与path的相对路径
+val：验证集与path的相对路径
+nc：类别数量，因为这个数据集只有一个类别（fire），nc即为1。
+names：类别名字。
+
+100.配置配置参数
+Parameters中
+--weights yolov5s.pt --data data/fire.yaml --workers 1 --batch-size 8 
+
+110.获取结果
+模型训练完成后，将runs/exp/weights下的模型（best.pt）复制在yolov5文件夹下。
+
+120.测试
+python detect.py --weights best.pt --source ./datasets/fire/images/val 
